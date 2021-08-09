@@ -37,31 +37,26 @@ add_executable(tmv
     gui/windows/mainwindow.h
     gui/windows/mainwindow.ui
 
-    geometry/node.cpp
-    geometry/node.h
-    geometry/element.cpp
-    geometry/element.h
-    geometry/meshfragment.cpp
-    geometry/meshfragment.h
-    geometry/meshview.cpp
-    geometry/meshview.h
+#    geometry/node.cpp
+#    geometry/node.h
+#    geometry/element.cpp
+#    geometry/element.h
+#    geometry/meshfragment.cpp
+#    geometry/meshfragment.h
+#    geometry/meshview.cpp
+#    geometry/meshview.h
 
     gui/interactor/SpecialSelector2D.cpp
     gui/interactor/SpecialSelector2D.h
-
-    ConcurrentPool.h
 )
 
 target_include_directories(tmv PUBLIC ${HDF5_INCLUDE_DIRS})
 target_include_directories(tmv PUBLIC ${Boost_INCLUDE_DIRS})
 target_include_directories(tmv PUBLIC gui gui/windows gui/interactor geometry)
 
+target_link_libraries(tmv PUBLIC m dl)
 target_link_libraries(tmv PRIVATE Qt5::Widgets Qt5::Core)
 target_link_libraries(tmv PRIVATE ${VTK_LIBRARIES})
-target_link_libraries(tmv PUBLIC tbb)
-target_link_libraries(tmv PUBLIC m)
 target_link_libraries(tmv PUBLIC ${HDF5_LIBRARIES})
 target_link_libraries(tmv PUBLIC Eigen3::Eigen)
 target_link_libraries(tmv PUBLIC ${Boost_LIBRARIES})
-#target_link_libraries(tmv PUBLIC gmsh)
-#target_link_libraries(tmv PUBLIC dl)

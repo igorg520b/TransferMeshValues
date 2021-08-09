@@ -5,6 +5,22 @@
 #include <iterator>
 
 
+/*
+    scalarBar->SetLookupTable(model.mesh->hueLut);
+
+    scalarBar->SetMaximumWidthInPixels(130);
+    scalarBar->SetBarRatio(0.07);
+    scalarBar->SetMaximumHeightInPixels(400);
+    scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
+    scalarBar->GetPositionCoordinate()->SetValue(0.90,0.015, 0.0);
+    scalarBar->SetLabelFormat("%.1e");
+    scalarBar->GetLabelTextProperty()->BoldOff();
+    scalarBar->GetLabelTextProperty()->ItalicOff();
+    scalarBar->GetLabelTextProperty()->ShadowOff();
+    scalarBar->GetLabelTextProperty()->SetColor(0.1,0.1,0.1);
+
+*/
+
 
 void icy::Mesh::Reset(double CharacteristicLengthMax, double offset)
 {

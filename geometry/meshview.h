@@ -1,17 +1,12 @@
-#if !defined(Q_MOC_RUN) // MOC has a glitch when parsing tbb headers
 #ifndef FL333_H
 #define FL333_H
 
 #include <gmsh.h>
 
 #include <vector>
-#include <tbb/concurrent_vector.h>
-#include <tbb/concurrent_unordered_set.h>
 
 #include "meshfragment.h"
 #include "element.h"
-#include "interaction.h"
-#include "bvh/bvhn.h"
 
 #include <vtkNew.h>
 #include <vtkUnstructuredGrid.h>
@@ -26,74 +21,44 @@
 #include <vtkDataSetMapper.h>
 #include <vtkLookupTable.h>
 #include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkPolyLine.h>
 #include <vtkPointData.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
+#include <vtkScalarBarActor.h>
 
-#include "Mathematics/IntrSegment2Segment2.h"
+#include <QObject>
 
-namespace icy { class Mesh; class Model; }
+namespace icy { class MeshView; }
 
-class icy::Mesh
+class icy::MeshView : public QObject
 {
+    Q_OBJECT
 public:
-    MeshFragment indenter;
-    std::vector<MeshFragment*> allFragments;   // including the indenter
-    std::vector<icy::Node*> allNodes;
-    std::vector<icy::Element*> allElems;
-    std::vector<std::pair<Node*,Node*>> allBoundaryEdges; // for visualization
-    unsigned freeNodeCount;
+    MeshFragment fragment;
 
-    Mesh();
-    void Reset(double CharacteristicLengthMax, double offset);
-    void RegenerateVisualizedGeometry();    // from the collection of individual meshes, build allNodes, allElems, etc.
+    MeshView();
 
-    double area_initial, area_current;
-private:
-    void UpdateValues();
-    void UnsafeUpdateGeometry();
+    enum VisOpt { none, displacement_x, displacement_y,
+                  velocity_x, velocity_y, velocity_mag,
+                  Green_strain_xx, Green_strain_yy, Green_strain_xy, plasticity_norm };
+    Q_ENUM(VisOpt)
 
-    // Collision detection
-public:
-    tbb::concurrent_vector<Interaction> collision_interactions;
-    void DetectContactPairs(double distance_threshold);
-    std::pair<bool, double> EnsureNoIntersectionViaCCD();
+    void ChangeVisualizationOption(VisOpt option);  // called from the main thread
+    void UpdateView();
 
-private:
-    BVHN root_ccd, root_contact;
-    std::vector<BVHN*> global_leaves_ccd, global_leaves_contact, fragmentRoots_ccd, fragmentRoots_contact;
-    std::vector<unsigned> broadlist_ccd, broadlist_contact; // indices of potentially colliding edges
-    tbb::concurrent_unordered_set<long long> narrow_list_contact;
-    tbb::concurrent_vector<double> ccd_results; // if not empty, time step is multiplied by the minimal value on the list
-
-    void AddToNarrowListIfNeeded(unsigned edge_idx, unsigned node_idx, double distance_threshold);
-    std::pair<bool, double> CCD(unsigned edge_idx, unsigned node_idx);  // if intersects, return [true, time]
-    bool EdgeIntersection(unsigned edgeIdx1, unsigned edgeIdx2); // true if edges intersect
-    void UpdateTree(float distance_threshold);
-    unsigned tree_update_counter = 0;
-
-    gte::TIQuery<double, gte::Segment2<double>, gte::Segment2<double>> mTIQuery;
+    bool showMeshAsDeformed = true; // deformed vs initial
 
     // VTK
-public:
-    void ChangeVisualizationOption(int option);  // called from the main thread
+    vtkNew<vtkScalarBarActor> scalarBar;
+    vtkNew<vtkActor> actor_mesh;
     vtkNew<vtkLookupTable> hueLut;
-    vtkNew<vtkActor> actor_collisions;
-    vtkNew<vtkActor> actor_mesh_deformable;
-    vtkNew<vtkActor> actor_boundary_all;
-    vtkNew<vtkActor> actor_boundary_intended_indenter;
 
-    enum ShowDeformationOption { initial, current };
-    ShowDeformationOption showDeformation = ShowDeformationOption::current;
 
 private:
 
-    int VisualizingVariable = 0;
+    VisOpt VisualizingOption = VisOpt::none;
 
     vtkNew<vtkPoints> points_deformable;
-    vtkNew<vtkPoints> points_indenter_intended;   // prescribed indenter location
     vtkNew<vtkDoubleArray> visualized_values;
 
     // elements
@@ -101,22 +66,7 @@ private:
     vtkNew<vtkCellArray> cellArray_deformable;
     vtkNew<vtkDataSetMapper> dataSetMapper_deformable;
 
-    // boundary
-    vtkNew<vtkUnstructuredGrid> ugrid_boundary_all;
-    vtkNew<vtkCellArray> cellArray_boundary_all;
-    vtkNew<vtkDataSetMapper> dataSetMapper_boundary_all;
-
-    // boundary-intended
-    vtkNew<vtkUnstructuredGrid> ugrid_indenter_intended;
-    vtkNew<vtkCellArray> cellArray_indenter_intended;
-    vtkNew<vtkDataSetMapper> dataSetMapper_indenter_intended;
-
-    // collisions
-    vtkNew<vtkPoints> points_collisions;
-    vtkNew<vtkUnstructuredGrid> ugrid_collisions;
-    vtkNew<vtkDataSetMapper> mapper_collisions;
-    vtkNew<vtkCellArray> cellArray_collisions;
-
+    // mapping of 51 integer values to RGB color components
     static constexpr float lutArrayTemperatureAdj[51][3] =
     {{0.770938, 0.951263, 0.985716}, {0.788065, 0.959241, 0.986878},
      {0.805191, 0.96722, 0.98804}, {0.822318, 0.975199, 0.989202},
@@ -145,7 +95,6 @@ private:
      {0.856449, 0.426459, 0.218019}, {0.850862, 0.397993, 0.204584},
      {0.845274, 0.369528, 0.19115}};
 
-    friend class icy::Model;
 };
-#endif
+
 #endif
