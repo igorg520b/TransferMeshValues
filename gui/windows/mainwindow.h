@@ -27,22 +27,22 @@
 #include <vtkDataSetMapper.h>
 #include <vtkCamera.h>
 
-#include <vtkOBJReader.h>
-#include <vtkNamedColors.h>
+//#include <vtkOBJReader.h>
+//#include <vtkNamedColors.h>
 #include <vtkProperty.h>
-#include <vtkVersion.h>
-#include <vtkWindowToImageFilter.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkMultiBlockDataSet.h>
-#include <vtkCompositePolyDataMapper2.h>
-#include <vtkPoints.h>
-#include <vtkIdList.h>
+//#include <vtkVersion.h>
+//#include <vtkWindowToImageFilter.h>
+//#include <vtkPolyDataMapper.h>
+//#include <vtkMultiBlockDataSet.h>
+//#include <vtkCompositePolyDataMapper2.h>
+//#include <vtkPoints.h>
+//#include <vtkIdList.h>
 #include <vtkDataSetSurfaceFilter.h>
-#include <vtkAxesActor.h>
+//#include <vtkAxesActor.h>
 
-#include <vtkDataSetSurfaceFilter.h>
-#include <vtkScalarBarActor.h>
-#include <vtkTextProperty.h>
+//#include <vtkDataSetSurfaceFilter.h>
+//#include <vtkScalarBarActor.h>
+//#include <vtkTextProperty.h>
 
 //#include <vtkAreaPicker.h>
 //#include <vtkPointPicker.h>

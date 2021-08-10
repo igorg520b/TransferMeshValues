@@ -34,7 +34,7 @@ class icy::MeshView : public QObject
 {
     Q_OBJECT
 public:
-    MeshFragment fragment;
+    MeshFragment *fragment;
 
     MeshView();
 
@@ -44,7 +44,8 @@ public:
     Q_ENUM(VisOpt)
 
     void ChangeVisualizationOption(VisOpt option);  // called from the main thread
-    void UpdateView();
+    void UpdateMeshView();
+    void UpdateMeshValues();
 
     bool showMeshAsDeformed = true; // deformed vs initial
 
@@ -56,7 +57,7 @@ public:
 
 private:
 
-    VisOpt VisualizingOption = VisOpt::none;
+    VisOpt visualizingOption = VisOpt::none;
 
     vtkNew<vtkPoints> points_deformable;
     vtkNew<vtkDoubleArray> visualized_values;
@@ -65,7 +66,7 @@ private:
     vtkNew<vtkUnstructuredGrid> ugrid_deformable;
     vtkNew<vtkCellArray> cellArray_deformable;
     vtkNew<vtkDataSetMapper> dataSetMapper_deformable;
-
+/*
     // mapping of 51 integer values to RGB color components
     static constexpr float lutArrayTemperatureAdj[51][3] =
     {{0.770938, 0.951263, 0.985716}, {0.788065, 0.959241, 0.986878},
@@ -94,7 +95,7 @@ private:
      {0.867625, 0.483389, 0.244888}, {0.862037, 0.454924, 0.231453},
      {0.856449, 0.426459, 0.218019}, {0.850862, 0.397993, 0.204584},
      {0.845274, 0.369528, 0.19115}};
-
+*/
 };
 
 #endif
