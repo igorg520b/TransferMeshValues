@@ -49,7 +49,8 @@
 //#include <vtkProp3DCollection.h>
 //#include <vtkRenderWindowInteractor.h>
 
-#include "SpecialSelector2D.h"
+//#include "SpecialSelector2D.h"
+#include <vtkInteractorStyleRubberBand2D.h>
 
 #include <iostream>
 #include <string>
@@ -92,7 +93,7 @@ private:
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
     QVTKOpenGLNativeWidget *qt_vtk_widget;
     vtkNew<vtkRenderer> renderer;
-    vtkNew<SpecialSelector2D> specialSelector2D;
+    vtkNew<vtkInteractorStyleRubberBand2D> specialSelector2D;
 
 
     const QString wtitle = "icFlow4: Finite Element Simulation";

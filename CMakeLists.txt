@@ -9,9 +9,9 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-#find_package(Eigen3 REQUIRED NO_MODULE)
-#find_package(HDF5 REQUIRED COMPONENTS CXX)
-#find_package(Boost REQUIRED)
+find_package(Eigen3 REQUIRED NO_MODULE)
+find_package(HDF5 REQUIRED COMPONENTS CXX)
+find_package(Boost REQUIRED)
 find_package(VTK 9.0 REQUIRED COMPONENTS
   CommonColor
   CommonCore
@@ -37,26 +37,23 @@ add_executable(tmv
     gui/windows/mainwindow.h
     gui/windows/mainwindow.ui
 
-#    geometry/node.cpp
-#    geometry/node.h
-#    geometry/element.cpp
-#    geometry/element.h
-#    geometry/meshfragment.cpp
-#    geometry/meshfragment.h
-#    geometry/meshview.cpp
-#    geometry/meshview.h
-
-    gui/interactor/SpecialSelector2D.cpp
-    gui/interactor/SpecialSelector2D.h
+    geometry/node.h
+    geometry/element.cpp
+    geometry/element.h
+    geometry/meshfragment.cpp
+    geometry/meshfragment.h
+    geometry/meshview.cpp
+    geometry/meshview.h
 )
 
-#target_include_directories(tmv PUBLIC ${HDF5_INCLUDE_DIRS})
-#target_include_directories(tmv PUBLIC ${Boost_INCLUDE_DIRS})
-target_include_directories(tmv PUBLIC gui gui/windows gui/interactor geometry)
+target_include_directories(tmv PUBLIC ${HDF5_INCLUDE_DIRS})
+target_include_directories(tmv PUBLIC ${Boost_INCLUDE_DIRS})
+target_include_directories(tmv PUBLIC gui/windows geometry)
 
-#target_link_libraries(tmv PUBLIC m dl)
+#target_link_libraries(tmv PUBLIC dl)
+target_link_libraries(tmv PUBLIC m)
 target_link_libraries(tmv PRIVATE Qt5::Widgets Qt5::Core)
 target_link_libraries(tmv PRIVATE ${VTK_LIBRARIES})
-#target_link_libraries(tmv PUBLIC ${HDF5_LIBRARIES})
-#target_link_libraries(tmv PUBLIC Eigen3::Eigen)
-#target_link_libraries(tmv PUBLIC ${Boost_LIBRARIES})
+target_link_libraries(tmv PUBLIC ${HDF5_LIBRARIES})
+target_link_libraries(tmv PUBLIC Eigen3::Eigen)
+target_link_libraries(tmv PUBLIC ${Boost_LIBRARIES})

@@ -3,6 +3,8 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+#include "node.h"
+
 MainWindow::~MainWindow() {delete ui;}
 
 MainWindow::MainWindow(QWidget *parent)
