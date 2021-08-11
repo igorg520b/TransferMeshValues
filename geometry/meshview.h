@@ -5,7 +5,6 @@
 
 #include <vector>
 
-#include "meshfragment.h"
 #include "element.h"
 
 #include <vtkNew.h>
@@ -14,49 +13,51 @@
 #include <vtkDataSetMapper.h>
 #include <vtkActor.h>
 #include <vtkProperty.h>
-#include <vtkNamedColors.h>
+//#include <vtkNamedColors.h>
 #include <vtkDoubleArray.h>
-#include <vtkIntArray.h>
+//#include <vtkIntArray.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkDataSetMapper.h>
 #include <vtkLookupTable.h>
-#include <vtkPolyData.h>
+//#include <vtkPolyData.h>
 #include <vtkPointData.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
 #include <vtkScalarBarActor.h>
+#include <vtkPSphereSource.h>
 
 #include <QObject>
 
-namespace icy { class MeshView; }
+namespace icy { class MeshView; class Model;}
 
 class icy::MeshView : public QObject
 {
     Q_OBJECT
 public:
-    MeshFragment *fragment;
-
     MeshView();
+    std::vector<icy::Node> nodes;
+    std::vector<icy::Element> elems;
+
+    // VTK
+    vtkNew<vtkScalarBarActor> scalarBar;
+    vtkNew<vtkActor> actor_mesh;
+
+    vtkNew<vtkSphereSource> sphereSource;
+    vtkNew<vtkPolyDataMapper> mapper;
 
     enum VisOpt { none, displacement_x, displacement_y,
                   velocity_x, velocity_y, velocity_mag,
                   Green_strain_xx, Green_strain_yy, Green_strain_xy, plasticity_norm };
     Q_ENUM(VisOpt)
 
-    void ChangeVisualizationOption(VisOpt option);  // called from the main thread
-    void UpdateMeshView();
-    void UpdateMeshValues();
-
-    bool showMeshAsDeformed = true; // deformed vs initial
-
-    // VTK
-    vtkNew<vtkScalarBarActor> scalarBar;
-    vtkNew<vtkActor> actor_mesh;
-    vtkNew<vtkLookupTable> hueLut;
-
 
 private:
 
+    void ChangeVisualizationOption(VisOpt option);
+    void UpdateMeshView();
+    void UpdateMeshValues();
+    bool showMeshAsDeformed = true; // deformed vs initial
+    double minmax[2];
     VisOpt visualizingOption = VisOpt::none;
 
     vtkNew<vtkPoints> points_deformable;
@@ -66,36 +67,9 @@ private:
     vtkNew<vtkUnstructuredGrid> ugrid_deformable;
     vtkNew<vtkCellArray> cellArray_deformable;
     vtkNew<vtkDataSetMapper> dataSetMapper_deformable;
-/*
-    // mapping of 51 integer values to RGB color components
-    static constexpr float lutArrayTemperatureAdj[51][3] =
-    {{0.770938, 0.951263, 0.985716}, {0.788065, 0.959241, 0.986878},
-     {0.805191, 0.96722, 0.98804}, {0.822318, 0.975199, 0.989202},
-     {0.839445, 0.983178, 0.990364}, {0.856572, 0.991157, 0.991526},
-     {0.872644, 0.995552, 0.98386}, {0.887397, 0.995466, 0.965157},
-     {0.902149, 0.99538, 0.946454}, {0.916902, 0.995294, 0.927751},
-     {0.931655, 0.995208, 0.909049}, {0.946408, 0.995123, 0.890346},
-     {0.961161, 0.995037, 0.871643}, {0.975913, 0.994951, 0.85294},
-     {0.990666, 0.994865, 0.834237}, {0.996257, 0.991758, 0.815237},
-     {0.994518, 0.986234, 0.795999}, {0.992779, 0.98071, 0.77676},
-     {0.99104, 0.975186, 0.757522}, {0.989301, 0.969662, 0.738283},
-     {0.987562, 0.964138, 0.719045}, {0.985823, 0.958614, 0.699807},
-     {0.984084, 0.953089, 0.680568}, {0.982345, 0.947565, 0.66133},
-     {0.97888, 0.936201, 0.641773}, {0.974552, 0.921917, 0.622058},
-     {0.970225, 0.907633, 0.602342}, {0.965897, 0.893348, 0.582626},
-     {0.961569, 0.879064, 0.562911}, {0.957242, 0.86478, 0.543195},
-     {0.952914, 0.850496, 0.52348}, {0.948586, 0.836212, 0.503764},
-     {0.944259, 0.821927, 0.484048}, {0.939066, 0.801586, 0.464871},
-     {0.933626, 0.779513, 0.445847}, {0.928186, 0.757441, 0.426823},
-     {0.922746, 0.735368, 0.4078}, {0.917306, 0.713296, 0.388776},
-     {0.911866, 0.691223, 0.369752}, {0.906426, 0.669151, 0.350728},
-     {0.900986, 0.647078, 0.331704}, {0.895546, 0.625006, 0.312681},
-     {0.889975, 0.597251, 0.298625}, {0.884388, 0.568785, 0.285191},
-     {0.8788, 0.54032, 0.271756}, {0.873212, 0.511855, 0.258322},
-     {0.867625, 0.483389, 0.244888}, {0.862037, 0.454924, 0.231453},
-     {0.856449, 0.426459, 0.218019}, {0.850862, 0.397993, 0.204584},
-     {0.845274, 0.369528, 0.19115}};
-*/
+    vtkNew<vtkLookupTable> hueLut;
+
+    friend icy::Model;
 };
 
 #endif

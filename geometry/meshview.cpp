@@ -47,6 +47,16 @@ icy::MeshView::MeshView()
     scalarBar->GetLabelTextProperty()->ShadowOff();
     scalarBar->GetLabelTextProperty()->SetColor(0.1,0.1,0.1);
 
+
+    sphereSource->SetCenter(0.0, 0.0, 0.0);
+     sphereSource->SetRadius(1.0);
+     // Make the surface smooth.
+     sphereSource->SetPhiResolution(100);
+     sphereSource->SetThetaResolution(100);
+
+     // for testing
+     mapper->SetInputConnection(sphereSource->GetOutputPort());
+     actor_mesh->SetMapper(mapper);
 }
 
 
@@ -82,12 +92,11 @@ void icy::MeshView::ChangeVisualizationOption(VisOpt option)
         dataSetMapper_deformable->SetScalarModeToUseCellData();
         dataSetMapper_deformable->ScalarVisibilityOn();
     }
-    UpdateMeshValues();
 }
 
 void icy::MeshView::UpdateMeshValues()
 {
-    if(fragment->nodes.size()==0)
+    if(nodes.size()==0)
     {
         dataSetMapper_deformable->ScalarVisibilityOff();
         ugrid_deformable->GetPointData()->RemoveArray("visualized_values");
@@ -99,59 +108,59 @@ void icy::MeshView::UpdateMeshValues()
     {
     // per node
     case VisOpt::displacement_x:
-        visualized_values->SetNumberOfValues(fragment->nodes.size());
-        for(std::size_t i=0;i<fragment->nodes.size();i++)
-            visualized_values->SetValue(i, fragment->nodes[i].xn.x()-fragment->nodes[i].x_initial.x());
+        visualized_values->SetNumberOfValues(nodes.size());
+        for(std::size_t i=0;i<nodes.size();i++)
+            visualized_values->SetValue(i, nodes[i].xn.x()-nodes[i].x_initial.x());
         break;
 
     case VisOpt::displacement_y:
-        visualized_values->SetNumberOfValues(fragment->nodes.size());
-        for(std::size_t i=0;i<fragment->nodes.size();i++)
-            visualized_values->SetValue(i, fragment->nodes[i].xn.y()-fragment->nodes[i].x_initial.y());
+        visualized_values->SetNumberOfValues(nodes.size());
+        for(std::size_t i=0;i<nodes.size();i++)
+            visualized_values->SetValue(i, nodes[i].xn.y()-nodes[i].x_initial.y());
         break;
 
     case VisOpt::velocity_x:
-        visualized_values->SetNumberOfValues(fragment->nodes.size());
-        for(std::size_t i=0;i<fragment->nodes.size();i++)
-            visualized_values->SetValue(i, fragment->nodes[i].vn.x());
+        visualized_values->SetNumberOfValues(nodes.size());
+        for(std::size_t i=0;i<nodes.size();i++)
+            visualized_values->SetValue(i, nodes[i].vn.x());
         break;
 
     case VisOpt::velocity_y:
-        visualized_values->SetNumberOfValues(fragment->nodes.size());
-        for(std::size_t i=0;i<fragment->nodes.size();i++)
-            visualized_values->SetValue(i, fragment->nodes[i].vn.y());
+        visualized_values->SetNumberOfValues(nodes.size());
+        for(std::size_t i=0;i<nodes.size();i++)
+            visualized_values->SetValue(i, nodes[i].vn.y());
         break;
 
     case VisOpt::velocity_mag:
-        visualized_values->SetNumberOfValues(fragment->nodes.size());
-        for(std::size_t i=0;i<fragment->nodes.size();i++)
-            visualized_values->SetValue(i, fragment->nodes[i].vn.norm());
+        visualized_values->SetNumberOfValues(nodes.size());
+        for(std::size_t i=0;i<nodes.size();i++)
+            visualized_values->SetValue(i, nodes[i].vn.norm());
         break;
 
 
         // per element
     case VisOpt::Green_strain_xx:
-        visualized_values->SetNumberOfValues(fragment->elems.size());
-        for(std::size_t i=0;i<fragment->elems.size();i++)
-            visualized_values->SetValue(i, fragment->elems[i].GreenStrain(0,0));
+        visualized_values->SetNumberOfValues(elems.size());
+        for(std::size_t i=0;i<elems.size();i++)
+            visualized_values->SetValue(i, elems[i].GreenStrain(0,0));
         break;
 
     case VisOpt::Green_strain_yy:
-        visualized_values->SetNumberOfValues(fragment->elems.size());
-        for(std::size_t i=0;i<fragment->elems.size();i++)
-            visualized_values->SetValue(i, fragment->elems[i].GreenStrain(1,1));
+        visualized_values->SetNumberOfValues(elems.size());
+        for(std::size_t i=0;i<elems.size();i++)
+            visualized_values->SetValue(i, elems[i].GreenStrain(1,1));
         break;
 
     case VisOpt::Green_strain_xy:
-        visualized_values->SetNumberOfValues(fragment->elems.size());
-        for(std::size_t i=0;i<fragment->elems.size();i++)
-            visualized_values->SetValue(i, fragment->elems[i].GreenStrain(0,1));
+        visualized_values->SetNumberOfValues(elems.size());
+        for(std::size_t i=0;i<elems.size();i++)
+            visualized_values->SetValue(i, elems[i].GreenStrain(0,1));
         break;
 
     case VisOpt::plasticity_norm:
-        visualized_values->SetNumberOfValues(fragment->elems.size());
-        for(std::size_t i=0;i<fragment->elems.size();i++)
-            visualized_values->SetValue(i, (fragment->elems[i].PiMultiplier-Eigen::Matrix2d::Identity()).norm());
+        visualized_values->SetNumberOfValues(elems.size());
+        for(std::size_t i=0;i<elems.size();i++)
+            visualized_values->SetValue(i, (elems[i].PiMultiplier-Eigen::Matrix2d::Identity()).norm());
         break;
 
     default:
@@ -159,21 +168,20 @@ void icy::MeshView::UpdateMeshValues()
     }
     visualized_values->Modified();
 
-    double minmax[2];
     visualized_values->GetValueRange(minmax);
-    hueLut->SetTableRange(minmax[0], minmax[1]);
+//    hueLut->SetTableRange(minmax[0], minmax[1]);
 }
 
 
 void icy::MeshView::UpdateMeshView()
 {
-    points_deformable->SetNumberOfPoints(fragment->nodes.size());
+    points_deformable->SetNumberOfPoints(nodes.size());
 
     double x[3]={};
 
     if(showMeshAsDeformed)
     {
-        for(const icy::Node &nd : fragment->nodes)
+        for(const icy::Node &nd : nodes)
         {
             x[0] = nd.xn[0];
             x[1] = nd.xn[1];
@@ -182,7 +190,7 @@ void icy::MeshView::UpdateMeshView()
     }
     else
     {
-        for(const icy::Node &nd : fragment->nodes)
+        for(const icy::Node &nd : nodes)
         {
             x[0] = nd.x_initial[0];
             x[1] = nd.x_initial[1];
@@ -194,7 +202,7 @@ void icy::MeshView::UpdateMeshView()
     cellArray_deformable->Reset();
 
     // deformable material - elements
-    for(icy::Element &tr : fragment->elems)
+    for(icy::Element &tr : elems)
     {
         vtkIdType pts[3] = {tr.nds[0]->locId, tr.nds[1]->locId,tr.nds[2]->locId};
         cellArray_deformable->InsertNextCell(3, pts);

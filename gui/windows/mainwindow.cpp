@@ -1,9 +1,10 @@
 #include <QFileDialog>
 #include <algorithm>
 #include "mainwindow.h"
+#include "meshview.h"
 #include "./ui_mainwindow.h"
 
-#include "node.h"
+//#include "node.h"
 
 MainWindow::~MainWindow() {delete ui;}
 
@@ -18,8 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     qt_vtk_widget->setRenderWindow(renderWindow);
 
     renderer->SetBackground(1.0,1.0,1.0);
-//    renderer->AddActor(model.mesh->actor_collisions);
-//    renderer->AddActor(scalarBar);
+    renderer->AddActor(model.mesh1.actor_mesh);
+//    renderer->AddActor(model.mesh1.scalarBar);
 
     renderWindow->AddRenderer(renderer);
     renderWindow->GetInteractor()->SetInteractorStyle(specialSelector2D);
@@ -39,8 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->addWidget(comboBox_visualizations);
 
     // populate combobox
-//    QMetaEnum qme = QMetaEnum::fromType<icy::Model::VisOpt>();
-//    for(int i=0;i<qme.keyCount();i++) comboBox_visualizations->addItem(qme.key(i));
+    QMetaEnum qme = QMetaEnum::fromType<icy::MeshView::VisOpt>();
+    for(int i=0;i<qme.keyCount();i++) comboBox_visualizations->addItem(qme.key(i));
 
     connect(comboBox_visualizations, QOverload<int>::of(&QComboBox::currentIndexChanged),
             [=](int index){ comboboxIndexChanged_visualizations(index); });

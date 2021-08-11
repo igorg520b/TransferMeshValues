@@ -15,8 +15,8 @@ find_package(Boost REQUIRED)
 find_package(VTK 9.0 REQUIRED COMPONENTS
   CommonColor
   CommonCore
-  FiltersSources
-  FiltersGeometry
+#  FiltersSources
+#  FiltersGeometry
   InteractionStyle
   RenderingContextOpenGL2
   RenderingCore
@@ -24,10 +24,10 @@ find_package(VTK 9.0 REQUIRED COMPONENTS
   RenderingGL2PSOpenGL2
   RenderingOpenGL2
   ViewsQt
-  IOGeometry
+#  IOGeometry
   RenderingAnnotation
-  RenderingLabel
-  IOImage
+#  RenderingLabel
+#  IOImage
 )
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
@@ -40,10 +40,10 @@ add_executable(tmv
     geometry/node.h
     geometry/element.cpp
     geometry/element.h
-    geometry/meshfragment.cpp
-    geometry/meshfragment.h
     geometry/meshview.cpp
     geometry/meshview.h
+    model.h
+    model.cpp
 )
 
 target_include_directories(tmv PUBLIC ${HDF5_INCLUDE_DIRS})

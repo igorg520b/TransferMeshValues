@@ -59,6 +59,8 @@
 //#include <stdexcept>
 //#include <cstdint>
 
+#include "model.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -83,6 +85,7 @@ private slots:
     void on_action_quit_triggered();
 
 private:
+    icy::Model model;
     QString m_sSettingsFile = "ic4_config";
     QComboBox *comboBox_visualizations;
 
