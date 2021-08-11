@@ -75,14 +75,17 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void showEvent( QShowEvent* event ) override;
-    void closeEvent( QCloseEvent* event ) override;
-
 
 private slots:
     void comboboxIndexChanged_visualizations(int index);
 
     void on_action_quit_triggered();
+
+    void on_actionOpen_triggered();
+
+    void on_actionUndeformed_State_triggered(bool checked);
+
+    void on_actionTransfer_Mesh_triggered();
 
 private:
     icy::Model model;
@@ -93,10 +96,11 @@ private:
     QSplitter *splitter_main;
 
     // VTK
-    vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-    QVTKOpenGLNativeWidget *qt_vtk_widget;
-    vtkNew<vtkRenderer> renderer;
-    vtkNew<vtkInteractorStyleRubberBand2D> specialSelector2D;
+    vtkNew<vtkGenericOpenGLRenderWindow> renderWindow1, renderWindow2;
+    std::unique_ptr<QVTKOpenGLNativeWidget> qt_vtk_widget1, qt_vtk_widget2;
+//    QVTKOpenGLNativeWidget *
+    vtkNew<vtkRenderer> renderer1, renderer2;
+    vtkNew<vtkInteractorStyleRubberBand2D> interactor1, interactor2;
 
 
     const QString wtitle = "icFlow4: Finite Element Simulation";

@@ -12,7 +12,7 @@ struct icy::Node
     Eigen::Vector2d xn = Eigen::Vector2d::Zero();
     Eigen::Vector2d vn = Eigen::Vector2d::Zero();     // position and velocity at step n
 
-    void Reset(int locId_, double x, double y) {locId = locId_; x_initial << x,y;};
+    void Reset(int locId_, double x, double y) {locId = locId_; x_initial << x,y; xn=x_initial; };
 };
 
 #endif // NODE_H

@@ -7,15 +7,6 @@
 
 icy::MeshView::MeshView()
 {
-    /*
-    // initialize LUT
-    const int nLut = 51;
-    hueLut->SetNumberOfTableValues(nLut);
-    for ( int i=0; i<nLut; i++)
-            hueLut->SetTableValue(i, (double)lutArrayTemperatureAdj[i][0],
-                    (double)lutArrayTemperatureAdj[i][1],
-                    (double)lutArrayTemperatureAdj[i][2], 1.0);
-*/
     visualized_values->SetName("visualized_values");
 
     ugrid_deformable->SetPoints(points_deformable);
@@ -47,16 +38,6 @@ icy::MeshView::MeshView()
     scalarBar->GetLabelTextProperty()->ShadowOff();
     scalarBar->GetLabelTextProperty()->SetColor(0.1,0.1,0.1);
 
-
-    sphereSource->SetCenter(0.0, 0.0, 0.0);
-     sphereSource->SetRadius(1.0);
-     // Make the surface smooth.
-     sphereSource->SetPhiResolution(100);
-     sphereSource->SetThetaResolution(100);
-
-     // for testing
-     mapper->SetInputConnection(sphereSource->GetOutputPort());
-     actor_mesh->SetMapper(mapper);
 }
 
 

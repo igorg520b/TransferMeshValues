@@ -13,18 +13,14 @@
 #include <vtkDataSetMapper.h>
 #include <vtkActor.h>
 #include <vtkProperty.h>
-//#include <vtkNamedColors.h>
 #include <vtkDoubleArray.h>
-//#include <vtkIntArray.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkDataSetMapper.h>
 #include <vtkLookupTable.h>
-//#include <vtkPolyData.h>
 #include <vtkPointData.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
 #include <vtkScalarBarActor.h>
-#include <vtkPSphereSource.h>
 
 #include <QObject>
 
@@ -41,9 +37,6 @@ public:
     // VTK
     vtkNew<vtkScalarBarActor> scalarBar;
     vtkNew<vtkActor> actor_mesh;
-
-    vtkNew<vtkSphereSource> sphereSource;
-    vtkNew<vtkPolyDataMapper> mapper;
 
     enum VisOpt { none, displacement_x, displacement_y,
                   velocity_x, velocity_y, velocity_mag,
